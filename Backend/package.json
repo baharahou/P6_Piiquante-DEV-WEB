@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/baharahou/P6_Piiquante-DEV-WEB/issues"
   },
-  "homepage": "https://github.com/baharahou/P6_Piiquante-DEV-WEB#readme"
+  "homepage": "https://github.com/baharahou/P6_Piiquante-DEV-WEB#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.3",
+    "mongoose-unique-validator": "^3.0.0",
+    "multer": "^1.4.4"
+  }
 }
