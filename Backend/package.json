@@ -1,0 +1,19 @@
+{
+  "name": "hottakes_backend",
+  "version": "1.0.0",
+  "description": "projet 6 DEV WEB OC",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baharahou/P6_Piiquante-DEV-WEB.git"
+  },
+  "author": "baharahou elhoussaine",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/baharahou/P6_Piiquante-DEV-WEB/issues"
+  },
+  "homepage": "https://github.com/baharahou/P6_Piiquante-DEV-WEB#readme"
+}
