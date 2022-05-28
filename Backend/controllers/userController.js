@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+const User = require("../models/userMdel");
 
 exports.singup = (req, res, next) => {
   /** haché le mot de passe avec bcrypt.hash() **/
@@ -26,7 +26,7 @@ exports.login = (req, res, next) => {
       if (!user) {
         return res.status(401).json({ message: "user not finded" });
       }
-      console.log(user);
+
       bcrypt
         .compare(req.body.password, user.password)
         .then((valid) => {
