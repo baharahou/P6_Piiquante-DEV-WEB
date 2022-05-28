@@ -6,7 +6,7 @@ exports.createSauce = (req, res, next) => {
   const sauce = new Sauce({
     ...req.body,
   });
-  Sauce.bulkSave()
+  Sauce.Save()
     .then(() =>
       res.status(201).json({ message: "sauce created successfuly :)" })
     )
