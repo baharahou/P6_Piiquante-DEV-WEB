@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const userRouter = require("./routes/userRoute");
 const sauceRouter = require("./routes/sauceRoute");
+const path = require("path");
 
 //  connecter la database mongoDB
 mongoose
@@ -27,7 +28,7 @@ app.use((req, res, next) => {
   );
   next();
 });
-
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/auth", userRouter);
-app.use("/api/sauce", sauceRouter);
+app.use("/api/sauces", sauceRouter);
 module.exports = app;

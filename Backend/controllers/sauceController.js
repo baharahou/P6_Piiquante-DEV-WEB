@@ -1,27 +1,65 @@
 const Sauce = require("../models/sauceModel");
+const fs = require("fs");
 
 /* creation de sauce.*/
 exports.createSauce = (req, res, next) => {
-  delete req.body._id;
-  const sauce = new Sauce({
-    ...req.body,
+  const sauceObject = JSON.parse(req.body.sauce);
+  delete sauceObject._id;
+  const newSauce = new Sauce({
+    ...sauceObject,
+    imageUrl: `${req.protocol}://${req.get("host")}/images/${
+      req.file.filename
+    }`,
+    likes: 0,
+    dislikes: 0,
+    usersLiked: "",
+    usersDisliked: "",
   });
-  Sauce.Save()
+  newSauce
+    .save()
     .then(() =>
-      res.status(201).json({ message: "sauce created successfuly :)" })
+      res.status(201).json({ message: "new sauce created successfuly" })
     )
     .catch((error) => res.status(400).json({ error }));
 };
 
-/* Renvoie un tableau de toutes les sauces de la base de données.*/
+/* get array of all sauce.*/
 exports.getAllSauce = (req, res, next) => {
   Sauce.find()
-    .then((newSauce) => res.status(200).json({ newSauce }))
+    .then((allSauce) => res.status(200).json(allSauce))
     .catch((error) => res.status(400).json({ error }));
 };
-/* Renvoie un tableau d'un seul  sauces de la base de données.*/
+
+/* get one sauce .*/
 exports.getOneSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params._id })
-    .then((newSauce) => res.status(200).json({ newSauce }))
+  Sauce.findOne({ _id: req.params.id })
+    .then((onesauce) => res.status(200).json(onesauce))
     .catch((error) => res.status(404).json({ error }));
+};
+
+exports.deleteSauce = (req, res, next) => {
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      if (!sauce) {
+        return res
+          .status(404)
+          .json({ error: new Error("Object sauce not finded!!") });
+      }
+
+      /*
+      if (sauce.userId !== req.auth.userId) {
+        console.log("test 2");
+        return res
+          .status(401)
+          .json({ error: new Error("request not authorized !!") });
+      } */
+
+      const filename = sauce.imageUrl.split("/images/")[1];
+      fs.unlink(`images/${filename}`, () => {
+        Sauce.deleteOne({ _id: req.params.id })
+          .then(() => res.status(200).json({ message: "sauce deleted!!" }))
+          .catch((error) => res.status(400).json({ error }));
+      });
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
