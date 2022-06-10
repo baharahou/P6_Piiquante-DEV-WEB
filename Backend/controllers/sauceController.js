@@ -1,5 +1,6 @@
 const Sauce = require("../models/sauceModel");
 const fs = require("fs");
+const { findOne } = require("../models/sauceModel");
 
 /* creation de sauce.*/
 exports.createSauce = (req, res, next) => {
@@ -12,8 +13,6 @@ exports.createSauce = (req, res, next) => {
     }`,
     likes: 0,
     dislikes: 0,
-    usersLiked: "",
-    usersDisliked: "",
   });
   newSauce
     .save()
@@ -88,4 +87,61 @@ exports.deleteSauce = (req, res, next) => {
       });
     })
     .catch((error) => res.status(500).json({ error }));
+};
+exports.addLikeDislike = (req, res, next) => {
+  if (req.body.like === 1) {
+    Sauce.updateOne(
+      { _id: req.params.id },
+      {
+        $push: { usersLiked: req.body.userId },
+        $inc: { likes: req.body.like++ },
+      }
+    )
+      .then(() => res.status(200).json({ message: "User Liked Sauce !!!" }))
+      .catch((error) => res.status(400).json({ error }));
+  }
+  if (req.body.like === -1) {
+    Sauce.updateOne(
+      { _id: req.params.id },
+      {
+        $inc: { dislikes: req.body.like++ * -1 },
+        $push: { usersDisliked: req.body.userId },
+      }
+    )
+      .then(() => res.status(200).json({ message: "User Disliked Sauce !!!" }))
+      .catch((error) => res.status(400).json({ error }));
+  }
+  if (req.body.like === 0) {
+    Sauce.findOne({ _id: req.params.id })
+      .then((sauce) => {
+        //console.log(sauce.usersLiked.includes(req.body.userId));
+        if (sauce.usersLiked.includes(req.body.userId)) {
+          // console.log("user liked include user id ");
+          Sauce.updateOne(
+            { _id: req.params.id },
+            {
+              $inc: { likes: -1 },
+              $pull: { usersLiked: req.body.userId },
+            }
+          )
+            .then(() =>
+              res.status(200).json({ message: "User remove Like Sauce !!!" })
+            )
+            .catch((error) => res.status(400).json({ error }));
+        } else if (sauce.usersDisliked.includes(req.body.userId)) {
+          Sauce.updateOne(
+            { _id: req.params.id },
+            {
+              $inc: { dislikes: -1 },
+              $pull: { usersDisliked: req.body.userId },
+            }
+          )
+            .then(() =>
+              res.status(200).json({ message: "User remove Dislike Sauce !!!" })
+            )
+            .catch((error) => res.status(400).json({ error }));
+        }
+      })
+      .catch((error) => res.status(404).json({ error }));
+  }
 };

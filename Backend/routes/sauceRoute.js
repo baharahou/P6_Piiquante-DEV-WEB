@@ -10,5 +10,6 @@ router.get("/:id", auth, sauceCtrl.getOneSauce);
 router.post("/", auth, multer, sauceCtrl.createSauce);
 router.delete("/:id", auth, multer, sauceCtrl.deleteSauce);
 router.put("/:id", auth, multer, sauceCtrl.updateSauce);
+router.post("/:id/like", auth, multer, sauceCtrl.addLikeDislike);
 
 module.exports = router;
